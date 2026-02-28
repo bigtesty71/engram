@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="E.N.G.R.A.M. — A graph-native memory architecture that transforms AI from stateless chatbots into persistent, intelligent partners. Powered by MemoryKeep technology.">
+    <title>MemoryKeep — E.N.G.R.A.M. | Persistent Memory for AI</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+
+<body>
+
+    <!-- ── Navigation ── -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">🧠</div>
+                <span>MemoryKeep</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="/app" class="nav-cta">Launch App →</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                ⚡ Introducing ENGRAM v1.0
+            </div>
+            <h1>
+                AI That Actually<br>
+                <span class="gradient-text">Remembers You</span>
+            </h1>
+            <p class="hero-subtitle">
+                E.N.G.R.A.M. is a graph-native memory engine that gives AI persistent, structured,
+                confidence-scored memory. No more repeating yourself. No more forgotten context.
+            </p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="openWidget()">
+                    ✿ Talk to E.N.G.R.A.M.
+                </button>
+                <a href="#architecture" class="btn btn-secondary">
+                    How It Works →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Stats ── -->
+    <section class="section">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="stat-nodes">0</div>
+                <div class="stat-label">Memory Nodes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-edges">0</div>
+                <div class="stat-label">Relationships</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="stat-confidence">—</div>
+                <div class="stat-label">Avg. Confidence</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Memory Persistence</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Features ── -->
+    <section class="section" id="features">
+        <div class="section-header">
+            <h2>Why E.N.G.R.A.M.?</h2>
+            <p>Traditional AI forgets everything between sessions. E.N.G.R.A.M. doesn't.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🕸️</div>
+                <h3>Graph-Native Memory</h3>
+                <p>Memories are stored as typed, interconnected nodes — not flat text. People, events, preferences, and
+                    concepts form a living knowledge graph.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Confidence Scoring</h3>
+                <p>Every memory has a trust score. Repeated mentions increase confidence. Contradictions lower it.
+                    E.N.G.R.A.M. prefers omission over incorrect recall.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Hybrid Retrieval</h3>
+                <p>Combines semantic similarity with structural graph traversal. Finds not just what was said — but the
+                    context, relationships, and patterns around it.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏰</div>
+                <h3>Temporal Awareness</h3>
+                <p>Memories have timestamps and validity windows. E.N.G.R.A.M. knows when things happened, when they
+                    expired, and how preferences drift over time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>Automatic Consolidation</h3>
+                <p>Session conversations are periodically summarized and merged into the persistent graph. Nothing
+                    important is lost — even across reboots.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Governed & Secure</h3>
+                <p>Node-level access controls, role-based filtering, and sensitive data encryption. Your memories are
+                    private and protected.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Architecture ── -->
+    <section class="section" id="architecture">
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>ENGRAM follows the MemoryKeep whitepaper architecture — purpose-built for persistent AI.</p>
+        </div>
+        <div class="architecture">
+            <div class="arch-flow">
+                <div class="arch-node">
+                    <div class="icon">💬</div>
+                    <div class="label">Conversation</div>
+                    <div class="sublabel">User input</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="icon">📥</div>
+                    <div class="label">Intake Engine</div>
+                    <div class="sublabel">Entity extraction</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="icon">🕸️</div>
+                    <div class="label">Memory Graph</div>
+                    <div class="sublabel">Nodes & edges</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="icon">🔍</div>
+                    <div class="label">Retrieval</div>
+                    <div class="sublabel">Hybrid scoring</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="icon">🧠</div>
+                    <div class="label">E.N.G.R.A.M.</div>
+                    <div class="sublabel">Response + memory</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Demo Section ── -->
+    <section class="section" id="demo">
+        <div class="section-header">
+            <h2>Try E.N.G.R.A.M. Live</h2>
+            <p>Click the chat bubble in the bottom-right to start a conversation. Tell E.N.G.R.A.M. about yourself and
+                watch it build memories in real-time.</p>
+        </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="cta-section">
+        <h2>Ready for AI That <span class="gradient-text">Remembers</span>?</h2>
+        <p>Launch the full ENGRAM dashboard to explore your memory graph.</p>
+        <a href="/app" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+            Launch Dashboard →
+        </a>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        <p>© 2026 MemoryKeep AI · ENGRAM v1.0 · <a href="https://memorykeep-ai.com">memorykeep-ai.com</a></p>
+    </footer>
+
+    <!-- ── ENGRAM Widget ── -->
+    <div class="engram-widget-bubble" id="widgetBubble" onclick="toggleWidget()">
+        <span class="icon">🧠</span>
+    </div>
+
+    <div class="engram-widget-window" id="widgetWindow">
+        <div class="widget-header">
+            <div class="widget-avatar">E</div>
+            <div class="widget-info">
+                <h4>E.N.G.R.A.M.</h4>
+                <div class="status">Online</div>
+            </div>
+            <button class="widget-close" onclick="toggleWidget()">✕</button>
+        </div>
+        <div class="widget-messages" id="widgetMessages">
+            <div class="widget-msg assistant">
+                Hello! I'm <strong>E.N.G.R.A.M.</strong>, your persistent AI assistant powered by MemoryKeep. I remember
+                our conversations and build a knowledge graph about the things you share with me. What would you like to
+                talk about?
+            </div>
+        </div>
+        <div class="widget-input">
+            <input type="text" id="widgetInput" placeholder="Talk to ENGRAM..."
+                onkeydown="if(event.key==='Enter')sendMessage()">
+            <button onclick="sendMessage()" id="widgetSend">➤</button>
+        </div>
+    </div>
+
+    <!-- ── Widget Script ── -->
+    <script src="/js/widget.js"></script>
+
+    <!-- ── Stats Loader ── -->
+    <script>
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/health');
+                const data = await res.json();
+                if (data.graph) {
+                    animateCounter('stat-nodes', data.graph.totalNodes);
+                    animateCounter('stat-edges', data.graph.totalEdges);
+                    document.getElementById('stat-confidence').textContent =
+                        data.graph.averageConfidence > 0 ? (data.graph.averageConfidence * 100).toFixed(0) + '%' : '—';
+                }
+            } catch (e) {
+                // Server not running, show placeholder
+            }
+        }
+
+        function animateCounter(id, target) {
+            const el = document.getElementById(id);
+            let current = 0;
+            const step = Math.max(1, Math.ceil(target / 30));
+            const interval = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(interval);
+                }
+                el.textContent = current.toLocaleString();
+            }, 30);
+        }
+
+        loadStats();
+    </script>
+
+</body>
+
+</html>
