@@ -1,5 +1,7 @@
 console.log('🚀 [TRACE 1] Starting server.js...');
 
+let lastBootError = null; // Global to capture errors for the /ping route
+
 try {
     console.log('🚀 [TRACE 2] Loading dependencies...');
     require('dotenv').config();
@@ -29,8 +31,12 @@ try {
     // ── HEALTH CHECK ROUTE ──
     app.get('/ping', (req, res) => {
         console.log('📥 Ping received');
-        res.status(200).send('PONG');
+        if (lastBootError) {
+            return res.status(200).json({ status: 'ALIVE_BUT_DB_FAILED', error: lastBootError });
+        }
+        res.status(200).send('PONG_OK');
     });
+
 
 
 
@@ -171,6 +177,7 @@ try {
                 console.error('   Server is still running — API calls will fail until DB is available.');
                 console.error('');
                 // Do NOT exit — keep server alive so Hostinger doesn't show 503
+                lastBootError = err.message;
             }
         });
     }
