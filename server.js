@@ -112,74 +112,67 @@ try {
         console.log('╚══════════════════════════════════════════════════╝');
         console.log('');
 
-        // ── Start HTTP Server FIRST (so Passenger sees the app as alive) ──
-        app.listen(PORT, async () => {
-            console.log('');
-            console.log(`✅ ENGRAM HTTP server started on port ${PORT}`);
-            console.log('');
+        try {
+            // Step 0: Initialize MySQL database & schema
+            console.log('⏳ Step 0/4 — Connecting to MySQL database...');
+            const db = require('./config/database');
+            await db.testConnection();
+            await db.initSchema();
 
-            try {
-                // Step 0: Initialize MySQL database & schema
-                console.log('⏳ Step 0/4 — Connecting to MySQL database...');
-                const db = require('./config/database');
-                await db.testConnection();
-                await db.initSchema();
+            // Step 1: Load Core Cognitive State
+            console.log('⏳ Step 1/4 — Loading Core Cognitive State...');
+            const coreState = require('./engine/core-state');
+            await coreState.load();
 
-                // Step 1: Load Core Cognitive State
-                console.log('⏳ Step 1/4 — Loading Core Cognitive State...');
-                const coreState = require('./engine/core-state');
-                await coreState.load();
+            // Step 2: Validate graph integrity
+            console.log('⏳ Step 2/4 — Validating graph integrity...');
+            const graph = require('./engine/graph');
+            const stats = await graph.getStats();
+            console.log(`   📊 Graph: ${stats.totalNodes} nodes, ${stats.totalEdges} edges`);
 
-                // Step 2: Validate graph integrity
-                console.log('⏳ Step 2/4 — Validating graph integrity...');
-                const graph = require('./engine/graph');
-                const stats = await graph.getStats();
-                console.log(`   📊 Graph: ${stats.totalNodes} nodes, ${stats.totalEdges} edges`);
+            // Step 3: Apply confidence decay
+            console.log('⏳ Step 3/4 — Applying confidence decay...');
+            await graph.applyDecay();
 
-                // Step 3: Apply confidence decay
-                console.log('⏳ Step 3/4 — Applying confidence decay...');
-                await graph.applyDecay();
-
-                // Step 4: Warm cache (log last consolidation)
-                console.log('⏳ Step 4/4 — Warming subgraph cache...');
-                const [lastConsolidation] = await db.query(
-                    'SELECT consolidated_at FROM consolidation_log ORDER BY consolidated_at DESC LIMIT 1'
-                );
-                if (lastConsolidation.length > 0) {
-                    console.log(`   📅 Last consolidation: ${lastConsolidation[0].consolidated_at}`);
-                } else {
-                    console.log('   📅 No previous consolidations found (fresh start)');
-                }
-
-                // ── Start scheduled tasks ──
-                cron.schedule('0 */6 * * *', async () => {
-                    console.log('⏰ Running scheduled consolidation...');
-                    const consolidation = require('./engine/consolidation');
-                    await consolidation.runScheduled();
-                });
-
-                cron.schedule('0 0 * * *', async () => {
-                    console.log('⏰ Running confidence pruning...');
-                    const confidenceEngine = require('./engine/confidence');
-                    await confidenceEngine.prune();
-                });
-
-                console.log('');
-                console.log('✅ ENGRAM fully initialized');
-                console.log(`   🤖 Model:     ${process.env.ENGRAM_MODEL || 'gemini-2.5-flash-lite'}`);
-                console.log(`   🗄️  Database:  ${process.env.DB_NAME}@${process.env.DB_HOST}`);
-                console.log('');
-
-            } catch (err) {
-                console.error('');
-                console.error('❌ ENGRAM database init failed:', err.message);
-                console.error('   Stack:', err.stack);
-                console.error('   Server is still running — API calls will fail until DB is available.');
-                console.error('');
-                // Do NOT exit — keep server alive so Hostinger doesn't show 503
-                lastBootError = err.message;
+            // Step 4: Warm cache (log last consolidation)
+            console.log('⏳ Step 4/4 — Warming subgraph cache...');
+            const [lastConsolidation] = await db.query(
+                'SELECT consolidated_at FROM consolidation_log ORDER BY consolidated_at DESC LIMIT 1'
+            );
+            if (lastConsolidation.length > 0) {
+                console.log(`   📅 Last consolidation: ${lastConsolidation[0].consolidated_at}`);
+            } else {
+                console.log('   📅 No previous consolidations found (fresh start)');
             }
-        });
+
+            // ── Start scheduled tasks ──
+            cron.schedule('0 */6 * * *', async () => {
+                console.log('⏰ Running scheduled consolidation...');
+                const consolidation = require('./engine/consolidation');
+                await consolidation.runScheduled();
+            });
+
+            cron.schedule('0 0 * * *', async () => {
+                console.log('⏰ Running confidence pruning...');
+                const confidenceEngine = require('./engine/confidence');
+                await confidenceEngine.prune();
+            });
+
+            console.log('');
+            console.log('✅ ENGRAM fully initialized');
+            console.log(`   🤖 Model:     ${process.env.ENGRAM_MODEL || 'gemini-2.5-flash-lite'}`);
+            console.log(`   🗄️  Database:  ${process.env.DB_NAME}@${process.env.DB_HOST}`);
+            console.log('');
+
+        } catch (err) {
+            console.error('');
+            console.error('❌ ENGRAM database init failed:', err.message);
+            console.error('   Stack:', err.stack);
+            console.error('   Server is still running — API calls will fail until DB is available.');
+            console.error('');
+            // Do NOT exit — keep server alive so Hostinger doesn't show 503
+            lastBootError = err.message;
+        }
     }
 
 } catch (startupError) {
