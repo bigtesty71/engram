@@ -18,7 +18,7 @@ process.on('unhandledRejection', (reason) => {
 
 // ── Simple diagnostic routes ──
 app.get('/ping', (req, res) => {
-    res.json({ status: 'alive', port: PORT, env: Object.keys(process.env).filter(k => k.startsWith('DB_') || k.startsWith('ENGRAM') || k === 'PORT').join(', ') });
+    res.json({ status: 'alive', port: PORT, node: process.version });
 });
 
 // ── Static files ──
@@ -40,7 +40,10 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
-// ── Start server ──
+// ── Start server (for direct node execution) ──
 app.listen(PORT, () => {
     console.log(`ENGRAM listening on port ${PORT}`);
 });
+
+// ── Export app for Passenger / Hostinger ──
+module.exports = app;
