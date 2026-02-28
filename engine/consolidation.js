@@ -22,21 +22,17 @@ class ConsolidationEngine {
         };
 
         try {
-            // Step 1: Summarize the stream
             const summary = await gemini.summarizeStream(streamContent);
             results.summary = summary;
 
-            // Step 2: Run intake on the summary to extract/update graph
             const intakeResults = await intake.process(summary, sessionId);
             results.nodesCreated = intakeResults.nodesCreated;
             results.nodesUpdated = intakeResults.nodesUpdated;
             results.edgesCreated = intakeResults.edgesCreated;
             results.edgesUpdated = intakeResults.edgesUpdated;
 
-            // Step 3: Apply confidence decay to old memories
             await graph.applyDecay();
 
-            // Step 4: Log consolidation
             await db.query(
                 `INSERT INTO consolidation_log (session_id, summary, nodes_created, nodes_updated, edges_created, edges_updated, patterns_detected)
                  VALUES (?, ?, ?, ?, ?, ?, ?)`,

@@ -1,8 +1,9 @@
 // ============================================================
 // MemoryKeep ENGRAM — Database Connection (MySQL)
 // Hostinger shared MySQL via mysql2 connection pool
+// Based on Hostinger's official Node.js + MySQL documentation
 // ============================================================
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 require('dotenv').config();
 
 let pool;
@@ -12,9 +13,9 @@ function getPool() {
         pool = mysql.createPool({
             host: process.env.DB_HOST || 'localhost',
             port: parseInt(process.env.DB_PORT) || 3306,
-            user: process.env.DB_USER || 'usr7',
+            user: process.env.DB_USER || 'u649168233_engram',
             password: process.env.DB_PASS || '',
-            database: process.env.DB_NAME || 'u649168233_MK',
+            database: process.env.DB_NAME || 'u649168233_graph',
             waitForConnections: true,
             connectionLimit: 10,
             queueLimit: 0,
@@ -23,7 +24,7 @@ function getPool() {
         });
         console.log(`✅ MySQL pool created — ${process.env.DB_HOST}/${process.env.DB_NAME}`);
     }
-    return pool;
+    return pool.promise(); // Return promise-based pool for async/await
 }
 
 // ── Async query wrapper ──
@@ -64,7 +65,6 @@ async function initSchema() {
             try {
                 await p.execute(stmt);
             } catch (err) {
-                // Duplicate entry errors are expected on re-runs (seed data already exists)
                 if (err.code === 'ER_DUP_ENTRY') {
                     // Silent — seed data already exists
                 } else if (err.code === 'ER_TABLE_EXISTS_ERROR') {
@@ -90,14 +90,10 @@ async function testConnection() {
 // ── Graceful shutdown ──
 async function close() {
     if (pool) {
-        await pool.end();
+        await pool.promise().end();
         pool = null;
         console.log('🔒 MySQL pool closed');
     }
 }
-
-process.on('exit', () => { if (pool) pool.end().catch(() => {}); });
-process.on('SIGINT', async () => { await close(); process.exit(0); });
-process.on('SIGTERM', async () => { await close(); process.exit(0); });
 
 module.exports = { query, getPool, initSchema, testConnection, close };

@@ -28,7 +28,6 @@ class ConfidenceEngine {
 
     // ── Explicit correction (user says "actually...") ──
     async correct(nodeId, newProperties = {}) {
-        // Read-modify-write for JSON properties
         const [rows] = await db.query('SELECT properties FROM memory_nodes WHERE id = ?', [nodeId]);
         if (rows.length > 0) {
             const existing = typeof rows[0].properties === 'string'
@@ -50,7 +49,7 @@ class ConfidenceEngine {
         );
     }
 
-    // ── Get memories below threshold (candidates for pruning) ──
+    // ── Get memories below threshold ──
     async getLowConfidence(threshold = 0.2) {
         const [rows] = await db.query(
             'SELECT id, label, type, confidence FROM memory_nodes WHERE confidence <= ? ORDER BY confidence ASC',

@@ -8,14 +8,12 @@ const { v4: uuidv4 } = require('uuid');
 class MemoryGraph {
     // ── Create Node ──
     async createNode({ type, label, properties = {}, confidence = 0.5, provenance = {} }) {
-        // Check for existing node with same label and type (canonicalization)
         const [existing] = await db.query(
             'SELECT id, confidence, mention_count FROM memory_nodes WHERE label = ? AND type = ?',
             [label, type]
         );
 
         if (existing.length > 0) {
-            // Reinforce existing node
             const node = existing[0];
             const newConfidence = Math.min(1.0, node.confidence * 1.0 + 0.05);
             await db.query(
@@ -37,7 +35,6 @@ class MemoryGraph {
 
     // ── Create Edge ──
     async createEdge({ sourceId, targetId, relationshipType, weight = 0.5, confidence = 0.5, provenance = {} }) {
-        // Check for existing edge
         const [existing] = await db.query(
             'SELECT id, weight, confidence FROM memory_edges WHERE source_id = ? AND target_id = ? AND relationship_type = ?',
             [sourceId, targetId, relationshipType]
@@ -72,9 +69,8 @@ class MemoryGraph {
         return this._parseNode(rows[0]);
     }
 
-    // ── Find Nodes by Label (LIKE search) ──
+    // ── Find Nodes by Label ──
     async findNodes(searchTerm, limit = 10) {
-        // Split search term into words for better matching
         const words = searchTerm.trim().split(/\s+/).filter(w => w.length > 1);
 
         if (words.length === 0) {
@@ -85,7 +81,6 @@ class MemoryGraph {
             return rows.map(r => this._parseNode(r));
         }
 
-        // Build a LIKE query that matches any word
         const conditions = words.map(() => 'label LIKE ?').join(' OR ');
         const params = words.map(w => `%${w}%`);
         params.push(parseFloat(process.env.ENGRAM_MIN_CONFIDENCE) || 0.1);
@@ -111,13 +106,12 @@ class MemoryGraph {
         return rows.map(r => this._parseNode(r));
     }
 
-    // ── k-Hop Traversal (§9) ──
+    // ── k-Hop Traversal (§9) — now async ──
     async traverse(startNodeId, maxHops = 3, minConfidence = 0.3) {
         const visited = new Set();
         const result = { nodes: [], edges: [] };
-        const self = this;
 
-        async function hop(nodeIds, depth) {
+        const hop = async (nodeIds, depth) => {
             if (depth > maxHops || nodeIds.length === 0) return;
 
             const newNodeIds = nodeIds.filter(id => !visited.has(id));
@@ -125,7 +119,6 @@ class MemoryGraph {
 
             newNodeIds.forEach(id => visited.add(id));
 
-            // Get edges from these nodes
             const placeholders = newNodeIds.map(() => '?').join(',');
             const [edges] = await db.query(
                 `SELECT e.*, sn.label as source_label, tn.label as target_label
@@ -144,26 +137,25 @@ class MemoryGraph {
                 if (!visited.has(edge.target_id)) nextNodeIds.add(edge.target_id);
             }
 
-            // Get the nodes
             if (newNodeIds.length > 0) {
                 const nodePlaceholders = newNodeIds.map(() => '?').join(',');
                 const [nodes] = await db.query(
                     `SELECT * FROM memory_nodes WHERE id IN (${nodePlaceholders})`,
                     newNodeIds
                 );
-                result.nodes.push(...nodes.map(n => self._parseNode(n)));
+                result.nodes.push(...nodes.map(n => this._parseNode(n)));
             }
 
             if (nextNodeIds.size > 0) {
                 await hop([...nextNodeIds], depth + 1);
             }
-        }
+        };
 
         await hop([startNodeId], 1);
         return result;
     }
 
-    // ── Get Full Graph (for visualization) ──
+    // ── Get Full Graph ──
     async getFullGraph(limit = 200) {
         const [nodes] = await db.query(
             'SELECT * FROM memory_nodes WHERE confidence >= ? ORDER BY confidence DESC, mention_count DESC LIMIT ?',

@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 
 class ActiveStream {
     constructor() {
-        this.sessions = new Map(); // sessionId → session data
+        this.sessions = new Map();
     }
 
     // ── Create a new session ──
@@ -37,7 +37,6 @@ class ActiveStream {
         }
 
         if (sessionId) {
-            // Try loading from DB
             const [rows] = await db.query(
                 'SELECT * FROM sessions WHERE id = ? AND status = ?',
                 [sessionId, 'active']
@@ -77,7 +76,6 @@ class ActiveStream {
         session.messages.push(message);
         session.tokenCount += tokenEstimate;
 
-        // Persist to DB
         await db.query(
             'UPDATE sessions SET stream_buffer = ?, token_count = ?, last_activity = NOW() WHERE id = ?',
             [JSON.stringify(session.messages), session.tokenCount, sessionId]
@@ -86,7 +84,7 @@ class ActiveStream {
         return { message, needsConsolidation: this.checkConsolidationTrigger(session) };
     }
 
-    // ── Check if consolidation needed (§5: ~85% threshold) ──
+    // ── Check if consolidation needed ──
     checkConsolidationTrigger(session) {
         const cap = parseInt(process.env.ENGRAM_APP_TOKEN_CAP) || 100000;
         const threshold = parseFloat(process.env.ENGRAM_CONSOLIDATION_THRESHOLD) || 0.85;
@@ -98,7 +96,6 @@ class ActiveStream {
         const session = this.sessions.get(sessionId);
         if (!session || session.messages.length === 0) return '';
 
-        // Take recent messages within token budget
         const messages = [];
         let tokens = 0;
         for (let i = session.messages.length - 1; i >= 0; i--) {
