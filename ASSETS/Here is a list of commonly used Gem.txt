@@ -1,0 +1,38 @@
+Here is a list of commonly used Gemini model call names (model IDs) available through Vertex AI and Google AI Studio, according to the latest documentation for the Gemini API. 
+Top-Level Gemini 3 & 3.1 Series
+gemini-3.1-pro-preview
+gemini-3-pro-preview
+gemini-3-flash-preview
+gemini-3-pro-image-preview
+gemini-3-deep-think-preview (Specialized reasoning) 
+Google AI for Developers
+Google AI for Developers
+ +2
+Gemini 2.5 Series
+gemini-2.5-pro (High capability, reasoning, and coding)
+gemini-2.5-flash (High performance/low latency)
+gemini-2.5-flash-lite (Cost-effective for high volume)
+gemini-2.5-flash-image (Native image generation/editing)
+gemini-2.5-flash-native-audio-preview-12-2025 (Real-time audio)
+gemini-2.5-flash-preview-tts (Text-to-speech optimized) 
+Google Cloud Documentation
+Google Cloud Documentation
+ +1
+Gemini 2.0 Series
+gemini-2.0-flash-001 (Stable)
+gemini-2.0-flash-lite-001 (Stable) 
+Google Cloud Documentation
+Google Cloud Documentation
+Key Model Name Patterns
+Stable versions typically do not have a suffix, such as gemini-2.5-pro.
+Versioned or preview models often have dates or version numbers, like gemini-2.5-flash-preview-09-2025.
+When calling the API, use models/ (e.g., models/gemini-2.0-flash). 
+Firebase
+Firebase
+ +2
+Other Models
+gemini-embedding-001 (For generating text embeddings)
+gemma-3-27b-it (Open model available via API) 
+Google AI for Developers
+Google AI for Developers
+ 
